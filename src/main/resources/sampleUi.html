@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Transaction API</title>
+</head>
+<body>
+<h1>Transaction API</h1>
+
+<h2>Search Transactions</h2>
+<form id="searchForm">
+    Customer ID: <input type="text" id="searchCustomerId" name="customerId" /><br />
+    Account Number: <input type="text" id="searchAccountNumber" name="accountNumber" /><br />
+    Description: <input type="text" id="searchDescription" name="description" /><br />
+    <input type="submit" value="Search" />
+</form>
+
+<h2>Update Transaction</h2>
+<form id="updateForm">
+    Transaction ID: <input type="text" id="updateId" name="id" /><br />
+    New Description: <input type="text" id="updateDescription" name="description" /><br />
+    <input type="submit" value="Update" />
+</form>
+
+<script>
+    // Example JWT Token, replace this with actual token retrieval logic
+    const jwtToken = 'your_jwt_token_here';
+
+    document.getElementById('searchForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const customerId = document.getElementById('searchCustomerId').value;
+        const accountNumber = document.getElementById('searchAccountNumber').value;
+        const description = document.getElementById('searchDescription').value;
+
+        fetch('http://localhost:8085/api/transactions?' + new URLSearchParams({
+            customerId,
+            accountNumber,
+            description
+        }), {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+    });
+
+    document.getElementById('updateForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const id = document.getElementById('updateId').value;
+        const description = document.getElementById('updateDescription').value;
+
+        fetch(`http://localhost:8085/api/transactions/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ description })
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+
+</body>
+</html>
